@@ -44,7 +44,9 @@ npm test
 npm run package
 ```
 
-A `dist/save-picture-as-1.0.1.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag workflow ugyanezt a ZIP-et GitHub Release-hez csatolja.
+A `dist/save-picture-as-1.0.2.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag workflow ugyanezt a ZIP-et GitHub Release-hez csatolja.
+
+A GitHub Actions valódi Chromiumban, betöltött MV3 bővítménnyel is ellenőrzi a rejtett dokumentumban futó konverziót, a kimeneti formátumot, méretet és átlátszóságot. A raszteres dekódolás `createImageBitmap`, a kódolás `OffscreenCanvas.convertToBlob` segítségével fut; nem vár a rejtett lap kirajzolására.
 
 A Node-tesztek fájlneveket, bemeneti korlátokat, képdekódolási/Canvas hibákat és letöltési életciklust ellenőriznek mock API-kkal. Valódi Chrome-ban a `tests/manual.md` ellenőrzőlistát használd.
 

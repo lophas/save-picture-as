@@ -36,26 +36,24 @@ test('fetch checks HTTP status, bounded streaming, and header names', async t =>
   await assert.rejects(fetchImage('https://test/image'), /32 MB/);
   assert.equal(cancelled, true);
 });
-test('encoding uses requested MIME, whites JPG, and releases resources on failure', async t => {
+test('bitmap encoding works without DOM decode, whites JPG and releases resources', async t => {
   const draws = [];
-  const revoked = [];
+  let closed = 0;
   let mimeMismatch = false;
   let pixels = false;
   let decodeFailure = false;
-  t.mock.method(URL, 'createObjectURL', () => 'blob:test');
-  t.mock.method(URL, 'revokeObjectURL', url => revoked.push(url));
-  const oldImage = globalThis.Image;
-  const oldDocument = globalThis.document;
-  globalThis.Image = class {
-    naturalWidth = 2;
-    get naturalHeight() { return pixels ? 30000000 : 2; }
-    async decode() { if (decodeFailure) throw new Error('Decode failed'); }
+  const oldBitmap = globalThis.createImageBitmap;
+  const oldCanvas = globalThis.OffscreenCanvas;
+  globalThis.createImageBitmap = async () => {
+    if (decodeFailure) throw new Error('Decode failed');
+    return { width: 2, height: pixels ? 30000000 : 2, close() { closed++; } };
   };
-  globalThis.document = { createElement() { return {
-    getContext() { return { fillStyle: '', fillRect() { draws.push('white'); }, drawImage() { draws.push('draw'); } }; },
-    toBlob(callback, mime) { callback(new Blob(['output'], { type: mimeMismatch ? 'image/png' : mime })); }
-  }; } };
-  t.after(() => { globalThis.Image = oldImage; globalThis.document = oldDocument; });
+  globalThis.OffscreenCanvas = class {
+    constructor(width, height) { this.width = width; this.height = height; }
+    getContext() { return { fillStyle: '', fillRect() { draws.push('white'); }, drawImage() { draws.push('draw'); } }; }
+    async convertToBlob({ type }) { return new Blob(['output'], { type: mimeMismatch ? 'image/png' : type }); }
+  };
+  t.after(() => { globalThis.createImageBitmap = oldBitmap; globalThis.OffscreenCanvas = oldCanvas; });
   for (const key of ['jpg', 'webp', 'png']) {
     draws.length = 0;
     const result = await encodeImage(new Blob(['input']), key);
@@ -70,5 +68,5 @@ test('encoding uses requested MIME, whites JPG, and releases resources on failur
   pixels = false;
   decodeFailure = true;
   await assert.rejects(encodeImage(new Blob(['input']), 'png'), /Decode/);
-  assert.equal(revoked.length, 6);
+  assert.equal(closed, 5);
 });

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Save picture as",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Save any supported image as WebP, JPG or PNG with its original filename.",
   "minimum_chrome_version": "116",
   "permissions": [
