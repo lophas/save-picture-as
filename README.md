@@ -1,15 +1,21 @@
 # Save picture as
 
+<img src="assets/thumbnail.png" width="128" height="128" alt="Save picture as ikon">
+
 Egyszerű, Manifest V3-as Chrome-bővítmény: jobb kattintás egy képen → **Save picture as** → **WebP / JPG / PNG**. A mentési ablakban az eredeti fájlnév jelenik meg, a választott formátum kiterjesztésével. A képtartalom ténylegesen konvertálódik.
 
-## Telepítés
+## Letöltés és telepítés
+
+A telepíthető csomag a [GitHub Releases](https://github.com/lophas/save-picture-as/releases/latest) oldalon található. Töltsd le a **save-picture-as-1.0.3.zip** fájlt az **Assets** részből, csomagold ki, majd a `chrome://extensions` oldalon fejlesztői módban töltsd be a kapott mappát (amely közvetlenül tartalmazza a `manifest.json` fájlt).
+
+Forráskódból is telepítheted:
 
 1. GitHubon **Code → Download ZIP**, majd csomagold ki.
 2. Nyisd meg a `chrome://extensions` oldalt, és kapcsold be a **Developer mode / Fejlesztői mód** kapcsolót.
 3. **Load unpacked / Kicsomagolt bővítmény betöltése**: válaszd ki a repó **extension** mappáját.
 4. Egy weboldalon kattints jobb gombbal a képre, majd válassz formátumot a **Save picture as** almenüből.
 
-Chrome 116 vagy újabb szükséges. Nincs buildlépés és nincs npm-függőség. Frissítés után a `chrome://extensions` oldalon kattints a bővítmény újratöltésére.
+Chrome 116 vagy újabb szükséges. Nincs buildlépés és nincs npm-függőség. Frissítéskor cseréld le a korábban betöltött mappa tartalmát az új csomag fájljaira, majd a `chrome://extensions` oldalon kattints a bővítmény újratöltésére. A verziószámot ugyanitt ellenőrizheted.
 
 ## Működés
 
@@ -44,7 +50,7 @@ npm test
 npm run package
 ```
 
-A `dist/save-picture-as-1.0.2.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag workflow ugyanezt a ZIP-et GitHub Release-hez csatolja.
+A `dist/save-picture-as-1.0.3.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag vagy a `main` ágba kerülő, `[release]` jelölésű commit ugyanezt a ZIP-et GitHub Release-hez csatolja, a verzióhoz tartozó `release-notes` fájl leírásával.
 
 A GitHub Actions valódi Chromiumban, betöltött MV3 bővítménnyel is ellenőrzi a rejtett dokumentumban futó konverziót, a kimeneti formátumot, méretet és átlátszóságot. A raszteres dekódolás `createImageBitmap`, a kódolás `OffscreenCanvas.convertToBlob` segítségével fut; nem vár a rejtett lap kirajzolására.
 

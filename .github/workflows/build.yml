@@ -29,12 +29,13 @@ jobs:
           name: save-picture-as
           path: dist/*.zip
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[release]'))
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: save-picture-as
@@ -42,4 +43,11 @@ jobs:
       - name: Publish release ZIP
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --repo "$GITHUB_REPOSITORY" --title "Save picture as $GITHUB_REF_NAME" --generate-notes
+        run: |
+          VERSION=$(python3 -c 'import json; print(json.load(open("extension/manifest.json"))["version"])')
+          TAG="v$VERSION"
+          if [[ "$GITHUB_REF" == refs/tags/* && "$GITHUB_REF_NAME" != "$TAG" ]]; then
+            echo "Tag does not match manifest version" >&2
+            exit 1
+          fi
+          gh release create "$TAG" "dist/save-picture-as-$VERSION.zip" --target "$GITHUB_SHA" --repo "$GITHUB_REPOSITORY" --title "Save picture as $TAG" --notes-file "release-notes/$TAG.md"
