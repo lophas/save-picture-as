@@ -1,0 +1,6 @@
+:root { color-scheme: light dark; font: 16px/1.6 system-ui, sans-serif; }
+body { margin: 0; padding: 8vh 24px; }
+main { max-width: 620px; margin: auto; }
+h1 { font-size: 26px; line-height: 1.25; }
+#message { padding: 16px; background: light-dark(#f3f4f6, #252830); border-radius: 8px; overflow-wrap: anywhere; }
+button { font: inherit; padding: 8px 24px; border: 0; border-radius: 6px; background: #2563eb; color: white; cursor: pointer; }

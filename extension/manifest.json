@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Save picture as",
+  "version": "1.0.0",
+  "description": "Save any supported image as WebP, JPG or PNG with its original filename.",
+  "minimum_chrome_version": "116",
+  "permissions": ["contextMenus", "downloads", "offscreen", "scripting", "storage"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": { "service_worker": "background.js", "type": "module" }
+}
