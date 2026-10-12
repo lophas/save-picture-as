@@ -1,7 +1,10 @@
 {
   "name": "save-picture-as",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test", "package": "python3 scripts/package.py" }
+  "scripts": {
+    "test": "node --test",
+    "package": "python3 scripts/package.py"
+  }
 }

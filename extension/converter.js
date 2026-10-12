@@ -1,7 +1,16 @@
 import { FORMATS, MAX_BYTES, MAX_PIXELS, dispositionName } from './shared.js';
 
 export async function fetchImage(source) {
-  const response = await fetch(source, { credentials: 'include', signal: AbortSignal.timeout(20000) });
+  let response;
+  // Public CDNs often send ACAO: *. Try without credentials before auth.
+  try {
+    response = await fetch(source, { credentials: 'omit', signal: AbortSignal.timeout(20000) });
+  } catch (error) {
+    if (error.name !== 'TypeError' || !/^https?:/i.test(source)) throw error;
+  }
+  if (!response || [401, 403].includes(response.status)) {
+    response = await fetch(source, { credentials: 'include', signal: AbortSignal.timeout(20000) });
+  }
   if (!response.ok) throw new Error(`Image request failed (HTTP ${response.status}).`);
   if (Number(response.headers.get('content-length')) > MAX_BYTES) throw new Error('Image exceeds the 32 MB input limit.');
   const reader = response.body.getReader();

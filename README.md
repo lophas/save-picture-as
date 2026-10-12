@@ -22,6 +22,8 @@ Chrome 116 vagy újabb szükséges. Nincs buildlépés és nincs npm-függőség
 - 32 MB bemeneti fájl- és 40 megapixeles képméretkorlát; a hálózati kérés 20 másodperc után megszakad.
 - Hibánál külön lap jelenik meg magyarázattal. A mentési ablak megszakítása normál művelet.
 
+Nyilvános HTTP(S) képeknél először cookie-k nélküli lekérés történik, hogy a `Access-Control-Allow-Origin: *` választ adó CDN-ek is működjenek. Hálózati/CORS-hiba vagy 401/403 válasz esetén külön, cookie-kat is használó kéréssel próbálkozik. Az oldalon futó tartalék lekérés először `same-origin` módban fut: az oldal saját domainjén megtartja a bejelentkezést, más domainre nem küld cookie-t.
+
 Az oldalhoz kötött Blob URL-t a kattintott iframe-ből olvassa ki. Ha a közvetlen HTTP-kérés sikertelen, ugyanabban a frame-ben próbálkozik újra. A bejelentkezési cookie-k, CORS-szabályok, lejárt URL-ek, hotlinkvédelem vagy a weboldal saját korlátozásai miatt egyes képek nem hozzáférhetők. Chrome belső lapokon és más védett oldalakon a bővítmény nem tud az oldalba kódot injektálni.
 
 ## Jogosultságok és adatvédelem
@@ -42,7 +44,7 @@ npm test
 npm run package
 ```
 
-A `dist/save-picture-as-1.0.0.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag workflow ugyanezt a ZIP-et GitHub Release-hez csatolja.
+A `dist/save-picture-as-1.0.1.zip` közvetlenül az extension fájljait tartalmazza. Csomagold ki, és a kapott mappát töltsd be. A GitHub Actions minden push/PR után tesztel és készít egy letölthető ZIP-artifactot. A `v*` tag workflow ugyanezt a ZIP-et GitHub Release-hez csatolja.
 
 A Node-tesztek fájlneveket, bemeneti korlátokat, képdekódolási/Canvas hibákat és letöltési életciklust ellenőriznek mock API-kkal. Valódi Chrome-ban a `tests/manual.md` ellenőrzőlistát használd.
 

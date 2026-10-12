@@ -2,7 +2,16 @@
 // Kept self-contained because executeScript serializes the function.
 export async function readPageImage(source, maxBytes) {
   try {
-    const response = await fetch(source, { credentials: 'include', signal: AbortSignal.timeout(20000) });
+    let response;
+    // same-origin keeps same-site auth while omitting credentials for CDNs.
+    try {
+      response = await fetch(source, { credentials: 'same-origin', signal: AbortSignal.timeout(20000) });
+    } catch (error) {
+      if (error.name !== 'TypeError' || !/^https?:/i.test(source)) throw error;
+    }
+    if (!response || [401, 403].includes(response.status)) {
+      response = await fetch(source, { credentials: 'include', signal: AbortSignal.timeout(20000) });
+    }
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const length = Number(response.headers.get('content-length'));
     if (length > maxBytes) throw new Error('Image exceeds the 32 MB input limit.');
